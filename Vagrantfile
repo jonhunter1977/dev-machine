@@ -3,33 +3,36 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/xenial64"
-  config.vm.network "private_network", ip: "192.168.0.4"
+  # Pick your virtual box image - https://atlas.hashicorp.com/boxes/search - is a good resource
+  # config.vm.box = "box-cutter/ubuntu1404-desktop"
+  config.vm.box = "box-cutter/ubuntu1604-desktop"
 
+  config.vm.network "private_network", ip: "192.168.10.4"
 
+  # set the name of your vm here
+  config.vm.define "dev-machine" do |d|
+  end
+
+  # uncomment/copy the line below if you want to do any port forwarding
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
-
-
-  # Share an additional folder to the guest VM. The first argument is
-  # the path on the host to the actual folder. The second argument is
-  # the path on the guest to mount the folder. And the optional third
-  # argument is a set of non-required options.
+  # uncomment/copy the line below if you want to sync any host folders to the guest
   # config.vm.synced_folder "../data", "/vagrant_data"
 
   config.vm.provider "virtualbox" do |vb|
-    # Display the VirtualBox GUI when booting the machine
-    vb.gui = true
+    vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
+
+    # use host for internet connectivity
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
 
     # Customize the amount of memory on the VM:
-    vb.memory = "1024"
+    vb.memory = "8192"
   end
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  # provision the machine using ansible running on the guest
+  # this will install ansible on the guest
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "ansible/playbook.yml"
+  end
 end
