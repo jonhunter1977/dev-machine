@@ -1,0 +1,12 @@
+- name: "Create download folder"
+  file:
+    path: "{{intelliJ.target_folder}}"
+    state: directory
+- name: "Download IntelliJ IDEA"
+  get_url:
+    url: "{{intelliJ.source}}{{intelliJ.archive}}"
+    dest: "{{intelliJ.target_folder}}"
+- name: "Extract IntelliJ"
+  unarchive:
+    src: "{{intelliJ.target_folder}}{{intelliJ.archive}}"
+    dest: "{{intelliJ.target_folder}}"

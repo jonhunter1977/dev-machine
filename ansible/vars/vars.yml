@@ -1,0 +1,4 @@
+intelliJ:
+  source: https://download.jetbrains.com/idea/
+  archive: ideaIC-2017.1.4.tar.gz
+  target_folder: /IntelliJ/

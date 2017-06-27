@@ -1,0 +1,28 @@
+- name: Provision dev box
+  hosts: localhost
+  become: true
+  no_log: false
+
+  vars_files:
+    - vars/vars.yml
+
+  tasks:
+    - name: "Install Git"
+      apt:
+        name: git
+        update_cache: yes
+    - name: "Install JRE"
+      apt:
+        name: default-jre
+        update_cache: yes
+    - name: "Install JDK"
+      apt:
+        name: default-jdk
+        update_cache: yes
+    - name: "Check if IntelliJ already downloaded and installed"
+      command: echo "Not installed"
+      register: installation_check
+      args:
+        creates: "{{intelliJ.target_folder}}{{intelliJ.archive}}"
+    - include: tasks/intelliJ.yml
+      when: installation_check.changed == true
